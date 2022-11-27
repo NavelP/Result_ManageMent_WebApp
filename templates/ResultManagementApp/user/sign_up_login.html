@@ -1,0 +1,53 @@
+{% extends 'ResultManagementApp/user/base.html' %}
+{% load static %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block css %}
+<link href="{% static 'ResultManagementApp/user/css/sign_up_login.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block body %}
+
+<body id="parti9cles-js"></body>
+<div class="animated bounceInDown">
+    <div class="container">
+        <span class="error animated tada" id="msg"></span>
+        <form name="form1" class="box" method="post">
+            {% csrf_token %}
+            <h4>Student <span>{{ title }}</span></h4>
+            </br>
+            {% if title == 'Sign Up' %}
+            <h5>Create A Student Account.</h5>
+            {% else %}
+            <h5>Login into Student Account.</h5>
+            {% endif %}
+            <input type="text" name="reg_no" placeholder="Registration Number" autocomplete="off">
+            <i class="typcn typcn-eye" id="eye"></i>
+            <input type="password" name="password" placeholder="Passsword" id="pwd" autocomplete="off">
+
+            <!--{% if title == 'Sign Up' %}
+            <input type="text" name="course" placeholder="Course" id="crse" autocomplete="off">
+            {% endif %}-->
+            {% if title == 'Login In' %}
+            <label>
+                <input type="checkbox">
+                <span>   </span>
+                <small class="rmb">Remember me</small>
+            </label>
+            <a href="#" class="forgetpass">Forget Password?</a>
+            {% endif %}
+            <input type="submit" value="{{ title }}" class="btn1">
+        </form>
+        {% if title == 'Sign Up' %}
+        <a href="{% url 'login' %}" class="dnthave">Already have an account? Login</a>
+        {% else %}
+        <a href="{% url 'signup' %}" class="dnthave">Don’t have an account? Sign up</a>
+        {% endif %}
+    </div>
+    <div class="footer">
+        <span>Student {% if title == 'Sign Up'%}Sign Up{% else %} Login{% endif %} <i class="fa fa-heart pulse"></i> <a href="#">Technical University of Kenya</a></span>
+    </div>
+</div>
+
+{% endblock %}

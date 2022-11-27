@@ -1,0 +1,777 @@
+{% extends 'ResultManagementApp/admin/admin.html' %}
+{% load replace_slash %}
+{% load static %}
+{% block title %} {{ title }} {% endblock %}
+
+<!--sets the image in the description card-->
+{% block description_image %}
+<img width="70px" height="90px" src="{% static 'ResultManagementApp/admin/assets/images/upload_results_image.jpeg' %}"
+     class="gradient-corona-img img-fluid rounded-circle" alt="">
+{% endblock %}
+<!--sets the page title for description of what the particular page does-->
+{% block page_title %}
+
+{% endblock %}
+
+<!--sets the page  description of what the particular page does-->
+{% block page_description %}
+{{ page_description }}
+{% endblock %}
+
+{% block body %}
+
+<!--fetch the faculties that exist and display them in the dropdown-->
+<div class="row">
+    <div class="col-xl-2 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="d-flex align-items-center align-self-start">
+                        <ul class="navbar-nav navbar-nav-right">
+                            <li class="nav-item dropdown d-lg-block">
+                                <a class="nav-link create-new-button  btn btn-inverse-success btn-fw"
+                                   id="createbuttonDropdown"
+                                   data-toggle="dropdown" aria-expanded="false" href="#" style="padding: 10px 40px">Choose
+                                    a Faculty</a>
+                                <div class="dropdown-menu dropdown-menu-left navbar-dropdown preview-list"
+                                     aria-labelledby="createbuttonDropdown">
+                                    <h6 class="p-3 mb-0">Faculties</h6>
+
+                                    {% for faculty in faculties %}
+                                    <div class="dropdown-divider"></div>
+                                    <form method="post" action="{% url 'unit_details' action='{{ title }}' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="faculty" value="{{ faculty.name }}"/>
+                                        <a class="dropdown-item preview-item">
+                                            <div class="preview-thumbnail">
+                                                <div class="preview-icon bg-dark rounded-circle">
+                                                    <i class="mdi mdi-file-outline text-primary"></i>
+                                                </div>
+                                            </div>
+                                            <div class="preview-item-content">
+                                                <input type="submit" value="{{ faculty.name }}"
+                                                       style="border: none; background: transparent; color: white">
+                                            </div>
+                                        </a>
+                                    </form>
+                                    {% endfor %}
+                                    <div class="dropdown-divider"></div>
+
+                                    <a class="nav-link create-new-button  btn btn-inverse-primary btn-fw"
+                                       id="createAddFacultyForm"
+                                       data-toggle="dropdown" aria-expanded="false" href="#"
+                                       style="padding: 10px 40px">+
+                                        Add a Faculty</a>
+
+                                    <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                                         aria-labelledby="createAddFacultyForm">
+
+                                        <form class="align-items-center" method="post" action="">
+                                            <h3> Add Faculty </h3>
+                                            {% csrf_token %}
+                                            {% for field in add_faculty_form %}
+                                            <div class="form-group">
+                                                <label for="{{ field.label }}">{{ field.label }}:</label>
+                                                <input type="text" class="form-control" id="{{ field.label }}"
+                                                       name="{{field.label}}"
+                                                       placeholder="Enter faculty {{ field.label }}">
+                                            </div>
+                                            {% endfor %}
+
+                                            <input type="submit" value="+ Add" class="btn btn-inverse-primary btn-fw">
+                                        </form>
+                                    </div>
+
+
+                                </div>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for key, value in student_unit_details.items %}
+        {% if key == 'faculty' and value != '' %}
+        <div class="col-xl-2 col-sm-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="d-flex align-items-center align-self-start">
+                            <ul class="navbar-nav navbar-nav-right">
+                                <li class="nav-item dropdown d-lg-block">
+                                    <a class="nav-link create-new-button  btn btn-inverse-success btn-fw"
+                                       id="screatebuttonDropdown"
+                                       data-toggle="dropdown" aria-expanded="false" href="#" style="padding: 10px 40px">Choose
+                                        a School</a>
+                                    <div class="dropdown-menu dropdown-menu-left navbar-dropdown preview-list"
+                                         aria-labelledby="createbuttonDropdown">
+                                        <h6 class="p-3 mb-0">Schools</h6>
+
+                                        {% for school in schools %}
+                                        <div class="dropdown-divider"></div>
+                                        <form method="post" action="{% url 'unit_details' action='{{ title }}' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="school" value="{{ school.name }}"/>
+                                            <a class="dropdown-item preview-item">
+                                                <div class="preview-thumbnail">
+                                                    <div class="preview-icon bg-dark rounded-circle">
+                                                        <i class="mdi mdi-file-outline text-primary"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="preview-item-content">
+                                                    <input type="submit" value="{{ school.name }}"
+                                                           style="border: none; background: transparent; color: white">
+                                                </div>
+                                            </a>
+                                        </form>
+                                        {% endfor %}
+                                        <div class="dropdown-divider"></div>
+
+                                        <a class="nav-link create-new-button  btn btn-inverse-primary btn-fw"
+                                           id="createAddSchoolForm"
+                                           data-toggle="dropdown" aria-expanded="false" href="#"
+                                           style="padding: 10px 40px">+
+                                            Add a School</a>
+
+                                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                                             aria-labelledby="createAddFacultyForm">
+
+                                            <!-- <form class="align-items-center" method="post" action="">
+                                                 <h3> Add Faculty </h3>
+                                                 {% csrf_token %}
+                                                 {% for field in add_faculty_form %}
+                                                 <div class="form-group">
+                                                     <label for="{{ field.label }}">{{ field.label }}:</label>
+                                                     <input type="text" class="form-control" id="{{ field.label }}"
+                                                            name="{{field.label}}"
+                                                            placeholder="Enter faculty {{ field.label }}">
+                                                 </div>
+                                                 {% endfor %}
+
+                                                 <input type="submit" value="+ Add" class="btn btn-inverse-primary btn-fw">
+                                             </form>-->
+                                        </div>
+
+
+                                    </div>
+
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+            {% for key, value in student_unit_details.items %}
+                {% if key == 'school' and value != '' %}
+                    <div class="col-xl-2 col-sm-6 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="d-flex align-items-center align-self-start">
+                                            <ul class="navbar-nav navbar-nav-right">
+                                                <li class="nav-item dropdown d-lg-block">
+                                                    <a class="nav-link create-new-button  btn btn-inverse-success btn-fw"
+                                                       id="dcreatebuttonDropdown"
+                                                       data-toggle="dropdown" aria-expanded="false" href="#" style="padding: 10px 40px">Choose
+                                                        a Department</a>
+                                                    <div class="dropdown-menu dropdown-menu-left navbar-dropdown preview-list"
+                                                         aria-labelledby="dcreatebuttonDropdown">
+                                                        <h6 class="p-3 mb-0">Departments</h6>
+
+                                                        {% for department in departments %}
+                                                        <div class="dropdown-divider"></div>
+                                                        <form method="post" action="{% url 'unit_details' action='{{ title }}' %}">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="department" value="{{ department.name }}"/>
+                                                            <a class="dropdown-item preview-item">
+                                                                <div class="preview-thumbnail">
+                                                                    <div class="preview-icon bg-dark rounded-circle">
+                                                                        <i class="mdi mdi-file-outline text-primary"></i>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="preview-item-content">
+                                                                    <input type="submit" value="{{ department.name }}"
+                                                                           style="border: none; background: transparent; color: white">
+                                                                </div>
+                                                            </a>
+                                                        </form>
+                                                        {% endfor %}
+                                                        <div class="dropdown-divider"></div>
+
+                                                        <a class="nav-link create-new-button  btn btn-inverse-primary btn-fw"
+                                                           id="createAddDepartmentForm"
+                                                           data-toggle="dropdown" aria-expanded="false" href="#"
+                                                           style="padding: 10px 40px">+
+                                                            Add a Department</a>
+
+                                                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                                                             aria-labelledby="createAddFacultyForm">
+
+                                                            <!--<form class="align-items-center" method="post" action="">
+                                                                <h3> Add Faculty </h3>
+                                                                {% csrf_token %}
+                                                                {% for field in add_faculty_form %}
+                                                                <div class="form-group">
+                                                                    <label for="{{ field.label }}">{{ field.label }}:</label>
+                                                                    <input type="text" class="form-control" id="{{ field.label }}"
+                                                                           name="{{field.label}}"
+                                                                           placeholder="Enter faculty {{ field.label }}">
+                                                                </div>
+                                                                {% endfor %}
+
+                                                                <input type="submit" value="+ Add" class="btn btn-inverse-primary btn-fw">
+                                                            </form>-->
+                                                        </div>
+
+
+                                                    </div>
+
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% for key, value in student_unit_details.items %}
+                        {% if key == 'department' and value != '' %}
+                            <div class="col-xl-2 col-sm-6 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="d-flex align-items-center align-self-start">
+                                                <ul class="navbar-nav navbar-nav-right">
+                                                    <li class="nav-item dropdown d-lg-block">
+                                                        <a class="nav-link create-new-button  btn btn-inverse-success btn-fw"
+                                                           id="ccreatebuttonDropdown"
+                                                           data-toggle="dropdown" aria-expanded="false" href="#" style="padding: 10px 40px">Choose
+                                                            a Course</a>
+                                                        <div class="dropdown-menu dropdown-menu-left navbar-dropdown preview-list"
+                                                             aria-labelledby="ccreatebuttonDropdown">
+                                                            <h6 class="p-3 mb-0">Courses</h6>
+
+                                                            {% for course in courses %}
+                                                            <div class="dropdown-divider"></div>
+                                                            <form method="post" action="{% url 'unit_details' action='{{ title }}' %}">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="course" value="{{ course.name }}"/>
+                                                                <a class="dropdown-item preview-item">
+                                                                    <div class="preview-thumbnail">
+                                                                        <div class="preview-icon bg-dark rounded-circle">
+                                                                            <i class="mdi mdi-file-outline text-primary"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="preview-item-content">
+                                                                        <input type="submit" value="{{ course.name }}"
+                                                                               style="border: none; background: transparent; color: white">
+                                                                    </div>
+                                                                </a>
+                                                            </form>
+                                                            {% endfor %}
+                                                            <div class="dropdown-divider"></div>
+
+                                                            <a class="nav-link create-new-button  btn btn-inverse-primary btn-fw"
+                                                               id="createAddCourseForm"
+                                                               data-toggle="dropdown" aria-expanded="false" href="#"
+                                                               style="padding: 10px 40px">+
+                                                                Add a Course</a>
+
+                                                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                                                                 aria-labelledby="createAddFacultyForm">
+
+                                                                <!--<form class="align-items-center" method="post" action="">
+                                                                    <h3> Add Faculty </h3>
+                                                                    {% csrf_token %}
+                                                                    {% for field in add_faculty_form %}
+                                                                    <div class="form-group">
+                                                                        <label for="{{ field.label }}">{{ field.label }}:</label>
+                                                                        <input type="text" class="form-control" id="{{ field.label }}"
+                                                                               name="{{field.label}}"
+                                                                               placeholder="Enter faculty {{ field.label }}">
+                                                                    </div>
+                                                                    {% endfor %}
+
+                                                                    <input type="submit" value="+ Add" class="btn btn-inverse-primary btn-fw">
+                                                                </form>-->
+                                                            </div>
+
+
+                                                        </div>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% for key, value in student_unit_details.items %}
+                                {% if key == 'course' and value != '' %}
+                                    <div class="col-xl-2 col-sm-6 grid-margin stretch-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="d-flex align-items-center align-self-start">
+                                                <ul class="navbar-nav navbar-nav-right">
+                                                    <li class="nav-item dropdown d-lg-block">
+                                                        <a class="nav-link create-new-button  btn btn-inverse-success btn-fw"
+                                                           id="ycreatebuttonDropdown"
+                                                           data-toggle="dropdown" aria-expanded="false" href="#" style="padding: 10px 40px">Choose
+                                                            Year</a>
+                                                        <div class="dropdown-menu dropdown-menu-left navbar-dropdown preview-list"
+                                                             aria-labelledby="dcreatebuttonDropdown">
+                                                            <h6 class="p-3 mb-0">Years</h6>
+
+                                                            {% for year_key, year_value in years.items %}
+                                                            <div class="dropdown-divider"></div>
+                                                            <form method="post" action="{% url 'unit_details' action='{{ title }}' %}">
+                                                                {% csrf_token %}
+                                                                <input type="hidden" name="year" value="{{ year_value }}"/>
+                                                                <a class="dropdown-item preview-item">
+                                                                    <div class="preview-thumbnail">
+                                                                        <div class="preview-icon bg-dark rounded-circle">
+                                                                            <i class="mdi mdi-file-outline text-primary"></i>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="preview-item-content">
+                                                                        <input type="submit" value="{{ year_value }}"
+                                                                               style="border: none; background: transparent; color: white">
+                                                                    </div>
+                                                                </a>
+                                                            </form>
+                                                            {% endfor %}
+                                                            <div class="dropdown-divider"></div>
+
+                                                            <a class="nav-link create-new-button  btn btn-inverse-primary btn-fw"
+                                                               id="createAddYearForm"
+                                                               data-toggle="dropdown" aria-expanded="false" href="#"
+                                                               style="padding: 10px 40px">+
+                                                                Add a Year</a>
+
+                                                            <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                                                                 aria-labelledby="createAddFacultyForm">
+
+                                                                <!--<form class="align-items-center" method="post" action="">
+                                                                    <h3> Add Faculty </h3>
+                                                                    {% csrf_token %}
+                                                                    {% for field in add_faculty_form %}
+                                                                    <div class="form-group">
+                                                                        <label for="{{ field.label }}">{{ field.label }}:</label>
+                                                                        <input type="text" class="form-control" id="{{ field.label }}"
+                                                                               name="{{field.label}}"
+                                                                               placeholder="Enter faculty {{ field.label }}">
+                                                                    </div>
+                                                                    {% endfor %}
+
+                                                                    <input type="submit" value="+ Add" class="btn btn-inverse-primary btn-fw">
+                                                                </form>-->
+                                                            </div>
+
+
+                                                        </div>
+
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                    {% for key, value in student_unit_details.items %}
+                                        {% if key == 'year' and value != '' %}
+                                            <div class="col-xl-2 col-sm-6 grid-margin stretch-card">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="d-flex align-items-center align-self-start">
+                                                            <ul class="navbar-nav navbar-nav-right">
+                                                                <li class="nav-item dropdown d-lg-block">
+                                                                    <a class="nav-link create-new-button  btn btn-inverse-success btn-fw"
+                                                                       id="tcreatebuttonDropdown"
+                                                                       data-toggle="dropdown" aria-expanded="false" href="#" style="padding: 10px 40px">Choose
+                                                                        a Term</a>
+                                                                    <div class="dropdown-menu dropdown-menu-left navbar-dropdown preview-list"
+                                                                         aria-labelledby="tcreatebuttonDropdown">
+                                                                        <h6 class="p-3 mb-0">Terms</h6>
+
+                                                                        {% for term_key, term_value in terms.items %}
+                                                                        <div class="dropdown-divider"></div>
+                                                                        <form method="post" action="{% url 'unit_details' action='{{ title }}' %}">
+                                                                            {% csrf_token %}
+                                                                            <input type="hidden" name="term" value="{{ term_value }}"/>
+                                                                            <a class="dropdown-item preview-item">
+                                                                                <div class="preview-thumbnail">
+                                                                                    <div class="preview-icon bg-dark rounded-circle">
+                                                                                        <i class="mdi mdi-file-outline text-primary"></i>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="preview-item-content">
+                                                                                    <input type="submit" value="{{ term_value }}"
+                                                                                           style="border: none; background: transparent; color: white">
+                                                                                </div>
+                                                                            </a>
+                                                                        </form>
+                                                                        {% endfor %}
+                                                                        <div class="dropdown-divider"></div>
+
+                                                                        <a class="nav-link create-new-button  btn btn-inverse-primary btn-fw"
+                                                                           id="createAddTermForm"
+                                                                           data-toggle="dropdown" aria-expanded="false" href="#"
+                                                                           style="padding: 10px 40px">+
+                                                                            Add a Term</a>
+
+                                                                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                                                                             aria-labelledby="createAddFacultyForm">
+
+                                                                            <!--<form class="align-items-center" method="post" action="">
+                                                                                <h3> Add Faculty </h3>
+                                                                                {% csrf_token %}
+                                                                                {% for field in add_faculty_form %}
+                                                                                <div class="form-group">
+                                                                                    <label for="{{ field.label }}">{{ field.label }}:</label>
+                                                                                    <input type="text" class="form-control" id="{{ field.label }}"
+                                                                                           name="{{field.label}}"
+                                                                                           placeholder="Enter faculty {{ field.label }}">
+                                                                                </div>
+                                                                                {% endfor %}
+
+                                                                                <input type="submit" value="+ Add" class="btn btn-inverse-primary btn-fw">
+                                                                            </form>-->
+                                                                        </div>
+
+
+                                                                    </div>
+
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            {% for key, value in student_unit_details.items %}
+                                                {% if key == 'term' and value != '' %}
+                                                    <div class="col-xl-2 col-sm-6 grid-margin stretch-card">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="d-flex align-items-center align-self-start">
+                                                            <ul class="navbar-nav navbar-nav-right">
+                                                                <li class="nav-item dropdown d-lg-block">
+                                                                    <a class="nav-link create-new-button  btn btn-inverse-success btn-fw"
+                                                                       id="ucreatebuttonDropdown"
+                                                                       data-toggle="dropdown" aria-expanded="false" href="#" style="padding: 10px 40px">Choose
+                                                                        a Unit</a>
+                                                                    <div class="dropdown-menu dropdown-menu-left navbar-dropdown preview-list"
+                                                                         aria-labelledby="tcreatebuttonDropdown">
+                                                                        <h6 class="p-3 mb-0">Units</h6>
+
+                                                                        {% for unit in units %}
+                                                                        <div class="dropdown-divider"></div>
+                                                                        <form method="post" action="{% url 'unit_details' action='{{ title }}' %}">
+                                                                            {% csrf_token %}
+                                                                            <input type="hidden" name="unit" value="{{ unit.name }}"/>
+                                                                            <a class="dropdown-item preview-item">
+                                                                                <div class="preview-thumbnail">
+                                                                                    <div class="preview-icon bg-dark rounded-circle">
+                                                                                        <i class="mdi mdi-file-outline text-primary"></i>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="preview-item-content">
+                                                                                    <input type="submit" value="{{ unit.name }}"
+                                                                                           style="border: none; background: transparent; color: white">
+                                                                                </div>
+                                                                            </a>
+                                                                        </form>
+                                                                        {% endfor %}
+                                                                        <div class="dropdown-divider"></div>
+
+                                                                        <a class="nav-link create-new-button  btn btn-inverse-primary btn-fw"
+                                                                           id="createAddUnitForm"
+                                                                           data-toggle="dropdown" aria-expanded="false" href="#"
+                                                                           style="padding: 10px 40px">+
+                                                                            Add a Unit</a>
+
+                                                                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                                                                             aria-labelledby="createAddFacultyForm">
+
+                                                                            <!--<form class="align-items-center" method="post" action="">
+                                                                                <h3> Add Faculty </h3>
+                                                                                {% csrf_token %}
+                                                                                {% for field in add_faculty_form %}
+                                                                                <div class="form-group">
+                                                                                    <label for="{{ field.label }}">{{ field.label }}:</label>
+                                                                                    <input type="text" class="form-control" id="{{ field.label }}"
+                                                                                           name="{{field.label}}"
+                                                                                           placeholder="Enter faculty {{ field.label }}">
+                                                                                </div>
+                                                                                {% endfor %}
+
+                                                                                <input type="submit" value="+ Add" class="btn btn-inverse-primary btn-fw">
+                                                                            </form>-->
+                                                                        </div>
+
+
+                                                                    </div>
+
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+
+
+</div>
+
+<div class="row">
+    {% if action == '#' %}
+        <!-- form to input results for uploading-->
+    <div class="col-xl-4 col-sm-6 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="d-flex align-items-center align-self-start">
+
+                        <form method="post" action="{% url 'upload_results' reg_no='#' action='#' %}">
+                            <h4 class="card-title">Result Input Form:</h4>
+                            {% csrf_token %}
+                            {% ifequal student_to_update_data|length 0 %}
+                            {% for exam_form_field in exam_entry_form %}
+                            <div class="form-group">
+                                <label for="{{ exam_form_field.label }}">{{ exam_form_field.label }}:</label>
+                                <input type="text" class="form-control" id="{{ exam_form_field.label }}"
+                                       name="{{exam_form_field.label}}"
+                                       placeholder="Enter {{ exam_form_field.label }}">
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            {% for label,data in student_to_update_data.items %}
+                            <div class="form-group">
+                                <label for="{{ exam_form_field.label }}">{{ label }}:</label>
+                                <input type="text" class="form-control" id="{{ label }}"
+                                       name="{{ label }}"
+                                       placeholder="Enter {{ exam_form_field_with_data.label }}" value="{{ data }}">
+                            </div>
+                            {% endfor %}
+                            {% endifequal %}
+
+                            <input type="submit" value="Submit Results" class="btn btn-primary">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- table to display results as they are inputted-->
+
+    <div class="col-lg-8 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Results Table</h4>
+                <p class="card-description"> The results that you input from the form will be displayed here
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Entry No:</th>
+                            <th>Registration Number</th>
+                            <th>Unit</th>
+                            <th>Cat 1</th>
+                            <th>Cat 2</th>
+                            <th>Main Exam</th>
+                            <th>Grade</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for table_row in results_in_the_inputted_unit %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ table_row.reg_no }}</td>
+                            <td>{{ table_row.unit }}</td>
+                            {% if table_row.cat_one > 20 %}
+                            <td class="text-success">{{ table_row.cat_one }}</td>
+                            {% elif table_row.cat_one > 15 %}
+                            <td class="text-info">{{ table_row.cat_one }}</td>
+                            {% elif table_row.cat_one > 10 %}
+                            <td class="text-warning">{{ table_row.cat_one }}</td>
+                            {% else %}
+                            <td class="text-danger">{{ table_row.cat_one }}</td>
+                            {% endif %}
+
+                            {% if table_row.cat_two > 20 %}
+                            <td class="text-success">{{ table_row.cat_two }}</td>
+                            {% elif table_row.cat_two > 15 %}
+                            <td class="text-info">{{ table_row.cat_two }}</td>
+                            {% elif table_row.cat_two > 10 %}
+                            <td class="text-warning">{{ table_row.cat_two }}</td>
+                            {% else %}
+                            <td class="text-danger">{{ table_row.cat_two }}</td>
+                            {% endif %}
+
+                            {% if table_row.main_exam >= 50 %}
+                            <td class="text-success">{{ table_row.main_exam }}</td>
+                            {% elif table_row.exam >= 30 %}
+                            <td class="text-info">{{ table_row.exam }}</td>
+                            {% elif table_row.main_exam > 20 %}
+                            <td class="text-warning">{{ table_row.main_exam }}</td>
+                            {% else %}
+                            <td class="text-danger">{{ table_row.main_exam }}</td>
+                            {% endif %}
+
+                            {% if table_row.grade == 'A' %}
+                            <td class="text-success">{{ table_row.grade }}<i class="mdi mdi-arrow-up"></i></td>
+                            {% elif table_row.grade == 'B' %}
+                            <td class="text-info">{{ table_row.grade }}<i class="mdi mdi-arrow-up"></i></td>
+                            {% elif table_row.grade == 'C' %}
+                            <td class="text-primary">{{ table_row.grade }}<i class="mdi mdi-arrow-up"></i></td>
+                            {% elif table_row.grade == 'D' %}
+                            <td class="text-warning">{{ table_row.grade }}<i class="mdi mdi-arrow-up"></i></td>
+                            {% elif table_row.grade == 'E' %}
+                            <td class="text-danger">{{ table_row.grade }}<i class="mdi mdi-arrow-down"></i></td>
+                            {% elif table_row.grade == 'F' %}
+                            <td class="text-danger">{{ table_row.grade }}<i class="mdi mdi-arrow-down"></i></td>
+                            {% endif %}
+
+                            <td>
+                                <a href="{% url 'delete_exam_entry' reg_no=table_row.reg_no|replace_slash_func %}">
+                                    <button class="btn btn-danger" style="margin-right: 10px">
+                                        <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                                    </button>
+                                </a>
+                                <a href="{% url 'upload_results' reg_no=table_row.reg_no|replace_slash_func action='#' %}">
+                                    <button class="btn btn-success">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif action == 'manage' %}
+    <!-- table to display results as they are inputted-->
+
+    <div class="col-lg-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Results Table</h4>
+                <p class="card-description"> The results that you input from the form will be displayed here
+                </p>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Entry No:</th>
+                            <th>Registration Number</th>
+                            <th>Unit</th>
+                            <th>Cat 1</th>
+                            <th>Cat 2</th>
+                            <th>Main Exam</th>
+                            <th>Grade</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for table_row in results_in_the_inputted_unit %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ table_row.reg_no }}</td>
+                            <td>{{ table_row.unit }}</td>
+                            {% if table_row.cat_one > 20 %}
+                            <td class="text-success">{{ table_row.cat_one }}</td>
+                            {% elif table_row.cat_one > 15 %}
+                            <td class="text-info">{{ table_row.cat_one }}</td>
+                            {% elif table_row.cat_one > 10 %}
+                            <td class="text-warning">{{ table_row.cat_one }}</td>
+                            {% else %}
+                            <td class="text-danger">{{ table_row.cat_one }}</td>
+                            {% endif %}
+
+                            {% if table_row.cat_two > 20 %}
+                            <td class="text-success">{{ table_row.cat_two }}</td>
+                            {% elif table_row.cat_two > 15 %}
+                            <td class="text-info">{{ table_row.cat_two }}</td>
+                            {% elif table_row.cat_two > 10 %}
+                            <td class="text-warning">{{ table_row.cat_two }}</td>
+                            {% else %}
+                            <td class="text-danger">{{ table_row.cat_two }}</td>
+                            {% endif %}
+
+                            {% if table_row.main_exam >= 50 %}
+                            <td class="text-success">{{ table_row.main_exam }}</td>
+                            {% elif table_row.exam >= 30 %}
+                            <td class="text-info">{{ table_row.exam }}</td>
+                            {% elif table_row.main_exam > 20 %}
+                            <td class="text-warning">{{ table_row.main_exam }}</td>
+                            {% else %}
+                            <td class="text-danger">{{ table_row.main_exam }}</td>
+                            {% endif %}
+
+                            {% if table_row.grade == 'A' %}
+                            <td class="text-success">{{ table_row.grade }}<i class="mdi mdi-arrow-up"></i></td>
+                            {% elif table_row.grade == 'B' %}
+                            <td class="text-info">{{ table_row.grade }}<i class="mdi mdi-arrow-up"></i></td>
+                            {% elif table_row.grade == 'C' %}
+                            <td class="text-primary">{{ table_row.grade }}<i class="mdi mdi-arrow-up"></i></td>
+                            {% elif table_row.grade == 'D' %}
+                            <td class="text-warning">{{ table_row.grade }}<i class="mdi mdi-arrow-up"></i></td>
+                            {% elif table_row.grade == 'E' %}
+                            <td class="text-danger">{{ table_row.grade }}<i class="mdi mdi-arrow-down"></i></td>
+                            {% elif table_row.grade == 'F' %}
+                            <td class="text-danger">{{ table_row.grade }}<i class="mdi mdi-arrow-down"></i></td>
+                            {% endif %}
+
+                            <td>
+                                <a href="{% url 'delete_exam_entry' reg_no=table_row.reg_no|replace_slash_func %}">
+                                    <button class="btn btn-danger" style="margin-right: 10px">
+                                        <i class="fa fa-trash" aria-hidden="true"></i> Delete
+                                    </button>
+                                </a>
+                                <a href="{% url 'upload_results' reg_no=table_row.reg_no|replace_slash_func action='#' %}">
+                                    <button class="btn btn-success">
+                                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i> Update
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% elif action == 'view' %}
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block js %}
+<script src="{% static 'ResultManagementApp/user/js/upload_results.js' %}"></script>
+{% endblock %}
